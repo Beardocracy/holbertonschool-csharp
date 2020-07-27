@@ -21,7 +21,6 @@ class MyStack
             do {
                 topItem = "";
                 topItem = aStack.Pop();
-                Console.WriteLine(topItem);
             } while (topItem != search);
         }
         aStack.Push(newItem);
