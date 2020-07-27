@@ -11,7 +11,9 @@ class LList
         }
         else
         {
-            return myLList.First.Value;
+            int first = myLList.First.Value;
+            myLList.RemoveFirst();
+            return first;
         }
     }
 }
