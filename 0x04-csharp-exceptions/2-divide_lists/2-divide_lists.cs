@@ -30,6 +30,7 @@ class List
                 {
                     results.Add(result);
                 }
+                flag = true;
             }
         }
         return results;
