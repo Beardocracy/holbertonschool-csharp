@@ -9,9 +9,9 @@ namespace Enemies
     public class Zombie
     {
         /* Represents the health */
-        int health;
+        private int health;
         /* Represesnts the name */
-        string name = "(No Name)";
+        private string name = "(No name)";
 
         /// <summary>
         /// Initializes a new instance of Zombie
