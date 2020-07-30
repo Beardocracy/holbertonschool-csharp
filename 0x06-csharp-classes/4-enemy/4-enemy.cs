@@ -8,14 +8,9 @@ namespace Enemies
 /// </summary>
     public class Zombie
     {
-        /// <summary>
-        /// Represents the health of the zombie
-        /// </summary>
+        /* Represents the health */
         int health;
-
-        /// <summary>
-        /// Represents the name of the Zombie
-        /// </summary>
+        /* Represesnts the name */
         string name = "(No Name)";
 
         /// <summary>
@@ -50,7 +45,7 @@ namespace Enemies
         {
             return health;
         }
-        
+
         /// <summary>
         /// Gets and sets the name.
         /// </summary>
