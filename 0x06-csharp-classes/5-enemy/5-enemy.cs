@@ -55,14 +55,14 @@ namespace Enemies
             get { return name; }
             set { name = value; }
         }
-        
+
         /// <summary>
         /// Overrides the tostring attribute.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "Zombie name: " + name + " / Total Health: " + health;
+            return "Zombie Name: " + name + " / Total Health: " + health;
         }
     }
 }
