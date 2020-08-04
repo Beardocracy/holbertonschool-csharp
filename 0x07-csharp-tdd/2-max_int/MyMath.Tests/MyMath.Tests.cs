@@ -4,10 +4,21 @@ using System.Collections.Generic;
 
 namespace MyMath.Tests
 {
-    public class MaxTests
+    public class OperationsTests
     {
         [Test]
-        public void CheckEmptyList()
+        public void Max_nullListCheck()
+        {
+            List<int> nums = null;
+            int returnValue;
+
+            returnValue = Operations.Max(nums);
+
+            Assert.AreEqual(0, returnValue);
+        }
+
+        [Test]
+        public void Max_CheckEmptyList()
         {
             List<int> nums = new List<int>();
             int returnValue;
@@ -18,7 +29,7 @@ namespace MyMath.Tests
         }
 
         [Test]
-        public void MaxTest_ReturnValue()
+        public void Max_ReturnValue()
         {
             List<int> nums = new List<int>() { 1, 5, -5, 88, 34, 0 };
             int returnValue;
