@@ -103,6 +103,6 @@ class Square : Rectangle
     /// </summary>
     public override string ToString()
     {
-        return "[Square]" + size + " / " + size;
+        return "[Square] " + size + " / " + size;
     }
 }
