@@ -45,58 +45,41 @@ class ImageProcessor
         );
     }
     
-    /*
+        
     /// <summary>
-    /// Calls inversehelper in threads.
-    /// </summary>
-    public static void Inverse(string[] filenames)
-    {
-        Parallel.ForEach(filenames, name =>
-        {
-            using (Bitmap image1 = new Bitmap(name))
-            {
-                string file = Path.GetFileNameWithoutExtension(name);
-                string extension = Path.GetExtension(name);
-                for (int i = 0; i < image1.Height; i++)
-                        {
-                            for (int j = 0; j < image1.Width; j++)
-                            {
-                                Color original = image1.GetPixel(j, i);
-                                image1.SetPixel(j, i, Color.FromArgb(255 - original.R, 255 - original.G, 255 - original.B));
-                            }
-                        }
-                        image1.Save($"{file}_inverse{extension}");
-            }
-        }
-        );
-    }
-    */
-    
-    /// <summary>
-    /// Sends filenames to Grayscale helper in threads.
+    /// Copies and saves an image in grayscale.
     /// </summary>
     public static void Grayscale(string[] filenames)
     {
         Parallel.ForEach(filenames, name =>
         {
-            //GrayscaleHelper(name);
-            using (Bitmap image1 = new Bitmap(name))
-            {
-                string file = Path.GetFileNameWithoutExtension(name);
-                string extension = Path.GetExtension(name);
+            Bitmap image1 = new Bitmap(name);
 
-                for (int i = 0; i < image1.Height; i++)
-                {
-                    for (int j = 0; j < image1.Width; j++)
-                    {
-                        Color pixel = image1.GetPixel(j, i);
-                        int gray = pixel.R + pixel.G + pixel.B;
-                        gray = gray / 3;
-                        image1.SetPixel(j, i, Color.FromArgb(gray, gray, gray));
-                    }
-                }
-                image1.Save($"{file}_grayscale{extension}");
+            Rectangle rect = new Rectangle(0, 0, image1.Width, image1.Height);
+            BitmapData imgData = image1.LockBits(rect, ImageLockMode.ReadWrite, image1.PixelFormat);
+
+            IntPtr ptr = imgData.Scan0;
+
+            int bytes = Math.Abs(imgData.Stride) * image1.Height;
+            byte[] rgbValues = new byte[bytes];
+
+            Marshal.Copy(ptr, rgbValues, 0, bytes);
+
+            for (int i = 0; i < rgbValues.Length; i += 3)
+            {
+                int gray = rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2];
+                gray = gray / 3;
+                
+                rgbValues[i] = (byte)gray;
+                rgbValues[i + 1] = (byte)gray;
+                rgbValues[i + 2] = (byte)gray;
             }
+
+            Marshal.Copy(rgbValues, 0, ptr, bytes);
+
+            string file = Path.GetFileNameWithoutExtension(name);
+            string extension = Path.GetExtension(name);
+            image1.Save($"{file}_grayscale{extension}");
         }
         );
     }
