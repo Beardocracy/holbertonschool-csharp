@@ -15,10 +15,7 @@ class ImageProcessor
     {
         foreach(string name in filenames)
         {
-            string file = Path.GetFileNameWithoutExtension(name);
-            string extension = Path.GetExtension(name);
-
-            Thread t = new Thread (()=>InverseHelper(name, file, extension));
+            Thread t = new Thread (()=>InverseHelper(name));
             t.Start();
         }
     }
@@ -26,8 +23,11 @@ class ImageProcessor
     /// <summary>
     /// Creates and saves an inverse copy of an image.
     /// </summary>
-    public static void InverseHelper(string name, string file, string extension)
+    public static void InverseHelper(string name)
     {
+        string file = Path.GetFileNameWithoutExtension(name);
+        string extension = Path.GetExtension(name);
+        
         Bitmap image1 = new Bitmap(name);
 
         for (int i = 0; i < image1.Height; i++)
