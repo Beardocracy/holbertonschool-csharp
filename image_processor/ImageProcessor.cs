@@ -94,49 +94,24 @@ class ImageProcessor
         }
         );
     }
-/*
     /// <summary>
     /// Sends filenames and height to helper function in threads.
     /// </summary>
     public static void Thumbnail(string[] filenames, int height)
     {
-        foreach(string name in filenames)
+        Parallel.ForEach(filenames, name =>
         {
-            Bitmap image1 = new Bitmap(name);
-            string file = Path.GetFileNameWithoutExtension(name);
-            string extension = Path.GetExtension(name);
-            int width = height * image1.Width / image1.Height;
-            Thread t = new Thread (()=>ImageResizer(image1, height, width, file, extension));
-            t.Start();
-        }
-    }
-
-        /// <summary>
-        /// Resizes an image to the specified height and width. Saves it.
-        /// </summary>
-        public static void ImageResizer(Image image, int height, int width, string file, string extension)
-    {
-        var destRect = new Rectangle(0, 0, width, height);
-        var destImage = new Bitmap(width, height);
-
-        destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-        using (var graphics = Graphics.FromImage(destImage))
-        {
-            graphics.CompositingMode = CompositingMode.SourceCopy;
-            graphics.CompositingQuality = CompositingQuality.HighQuality;
-            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            graphics.SmoothingMode = SmoothingMode.HighQuality;
-            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-            using (var wrapMode = new ImageAttributes())
+            using (Bitmap image1 = new Bitmap(name))
             {
-                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                graphics.DrawImage(image, destRect, 0, 0, image.Width,image.Height, GraphicsUnit.Pixel, wrapMode);
+                string file = Path.GetFileNameWithoutExtension(name);
+                string extension = Path.GetExtension(name);
+                int width = height * image1.Width / image1.Height;
+                
+                Image thumbnail = image1.GetThumbnailImage(width, height, null, IntPtr.Zero);
+                
+                thumbnail.Save($"{file}_th{extension}");
             }
         }
-
-        destImage.Save($"{file}_th{extension}");
+        );
     }
-    */
 }
