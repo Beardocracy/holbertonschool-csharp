@@ -28,17 +28,18 @@ class ImageProcessor
         string file = Path.GetFileNameWithoutExtension(name);
         string extension = Path.GetExtension(name);
         
-        Bitmap image1 = new Bitmap(name);
-
-        for (int i = 0; i < image1.Height; i++)
+        using (Bitmap image1 = new Bitmap(name))
         {
-            for (int j = 0; j < image1.Width; j++)
-            {
-                Color original = image1.GetPixel(j, i);
-                image1.SetPixel(j, i, Color.FromArgb(255 - original.R, 255 - original.G, 255 - original.B));
-            }
+            for (int i = 0; i < image1.Height; i++)
+                    {
+                        for (int j = 0; j < image1.Width; j++)
+                        {
+                            Color original = image1.GetPixel(j, i);
+                            image1.SetPixel(j, i, Color.FromArgb(255 - original.R, 255 - original.G, 255 - original.B));
+                        }
+                    }
+                    image1.Save($"{file}_inverse{extension}");
         }
-        image1.Save($"{file}_inverse{extension}");
     }
 
     /// <summary>
@@ -61,19 +62,20 @@ class ImageProcessor
         string file = Path.GetFileNameWithoutExtension(name);
         string extension = Path.GetExtension(name);
         
-        Bitmap image1 = new Bitmap(name);
-
-        for (int i = 0; i < image1.Height; i++)
+        using (Bitmap image1 = new Bitmap(name))
         {
-            for (int j = 0; j < image1.Width; j++)
+            for (int i = 0; i < image1.Height; i++)
             {
-                Color pixel = image1.GetPixel(j, i);
-                int gray = pixel.R + pixel.G + pixel.B;
-                gray = gray / 3;
-                image1.SetPixel(j, i, Color.FromArgb(gray, gray, gray));
+                for (int j = 0; j < image1.Width; j++)
+                {
+                    Color pixel = image1.GetPixel(j, i);
+                    int gray = pixel.R + pixel.G + pixel.B;
+                    gray = gray / 3;
+                    image1.SetPixel(j, i, Color.FromArgb(gray, gray, gray));
+                }
             }
+            image1.Save($"{file}_grayscale{extension}");
         }
-        image1.Save($"{file}_grayscale{extension}");
     }
 
     /// <summary>
@@ -96,23 +98,70 @@ class ImageProcessor
         string file = Path.GetFileNameWithoutExtension(name);
         string extension = Path.GetExtension(name);
         
-        Bitmap image1 = new Bitmap(name);
-
-        for (int i = 0; i < image1.Height; i++)
+        using (Bitmap image1 = new Bitmap(name))
         {
-            for (int j = 0; j < image1.Width; j++)
+            for (int i = 0; i < image1.Height; i++)
             {
-                Color pixel = image1.GetPixel(j, i);
-                
-                double sum = pixel.R + pixel.G + pixel.B;
-                int bw = 0;
-                if (sum >= threshold)
+                for (int j = 0; j < image1.Width; j++)
                 {
-                    bw = 255;
+                    Color pixel = image1.GetPixel(j, i);
+                    
+                    double sum = pixel.R + pixel.G + pixel.B;
+                    int bw = 0;
+                    if (sum >= threshold)
+                    {
+                        bw = 255;
+                    }
+                    image1.SetPixel(j, i, Color.FromArgb(bw, bw, bw));
                 }
-                image1.SetPixel(j, i, Color.FromArgb(bw, bw, bw));
+            }
+            image1.Save($"{file}_bw{extension}");
+        }
+        
+    }
+/*
+    /// <summary>
+    /// Sends filenames and height to helper function in threads.
+    /// </summary>
+    public static void Thumbnail(string[] filenames, int height)
+    {
+        foreach(string name in filenames)
+        {
+            Bitmap image1 = new Bitmap(name);
+            string file = Path.GetFileNameWithoutExtension(name);
+            string extension = Path.GetExtension(name);
+            int width = height * image1.Width / image1.Height;
+            Thread t = new Thread (()=>ImageResizer(image1, height, width, file, extension));
+            t.Start();
+        }
+    }
+
+        /// <summary>
+        /// Resizes an image to the specified height and width. Saves it.
+        /// </summary>
+        public static void ImageResizer(Image image, int height, int width, string file, string extension)
+    {
+        var destRect = new Rectangle(0, 0, width, height);
+        var destImage = new Bitmap(width, height);
+
+        destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+        using (var graphics = Graphics.FromImage(destImage))
+        {
+            graphics.CompositingMode = CompositingMode.SourceCopy;
+            graphics.CompositingQuality = CompositingQuality.HighQuality;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+            using (var wrapMode = new ImageAttributes())
+            {
+                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                graphics.DrawImage(image, destRect, 0, 0, image.Width,image.Height, GraphicsUnit.Pixel, wrapMode);
             }
         }
-        image1.Save($"{file}_bw{extension}");
+
+        destImage.Save($"{file}_th{extension}");
     }
+    */
 }
