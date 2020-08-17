@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 /// <summary>
 /// Contains the Inverse function
@@ -83,11 +84,15 @@ class ImageProcessor
     /// </summary>
     public static void BlackWhite(string[] filenames, double threshold)
     {
-        foreach(string name in filenames)
+        Parallel.ForEach(filenames, name =>
         {
+            BlackWhiteHelper(name, threshold);
+            /*
             Thread t = new Thread (()=>BlackWhiteHelper(name, threshold));
             t.Start();
+            */
         }
+        );
     }
 
     /// <summary>
