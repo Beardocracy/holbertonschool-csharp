@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 
 /// <summary>
@@ -14,16 +13,14 @@ class ImageProcessor
     /// </summary>
     public static void Inverse(string[] filenames)
     {
-        foreach(string name in filenames)
+        Parallel.ForEach(filenames, name =>
         {
-            Thread t = new Thread (()=>InverseHelper(name));
-            t.Start();
+            InverseHelper(name);
         }
+        );
     }
 
-    /// <summary>
-    /// Creates and saves an inverse copy of an image.
-    /// </summary>
+    /* Creates and saves an inverse copy of an image. */
     private static void InverseHelper(string name)
     {
         string file = Path.GetFileNameWithoutExtension(name);
@@ -48,23 +45,21 @@ class ImageProcessor
     /// </summary>
     public static void Grayscale(string[] filenames)
     {
-        foreach(string name in filenames)
+        Parallel.ForEach(filenames, name =>
         {
-            Thread t = new Thread (()=>GrayscaleHelper(name));
-            t.Start();
+            GrayscaleHelper(name);
         }
+        );
     }
 
-    /// <summary>
-    /// Copies and saves an image in grayscale.
-    /// </summary>
+    /* Copies and saves an image in grayscale. */
     private static void GrayscaleHelper(string name)
     {
-        string file = Path.GetFileNameWithoutExtension(name);
-        string extension = Path.GetExtension(name);
-        
         using (Bitmap image1 = new Bitmap(name))
         {
+            string file = Path.GetFileNameWithoutExtension(name);
+            string extension = Path.GetExtension(name);
+
             for (int i = 0; i < image1.Height; i++)
             {
                 for (int j = 0; j < image1.Width; j++)
@@ -87,24 +82,18 @@ class ImageProcessor
         Parallel.ForEach(filenames, name =>
         {
             BlackWhiteHelper(name, threshold);
-            /*
-            Thread t = new Thread (()=>BlackWhiteHelper(name, threshold));
-            t.Start();
-            */
         }
         );
     }
 
-    /// <summary>
-    /// Copies and saves an image in bw.
-    /// </summary>
+    /* Copies and saves an image in bw. */
     private static void BlackWhiteHelper(string name, double threshold)
     {
-        string file = Path.GetFileNameWithoutExtension(name);
-        string extension = Path.GetExtension(name);
-        
         using (Bitmap image1 = new Bitmap(name))
         {
+            string file = Path.GetFileNameWithoutExtension(name);
+            string extension = Path.GetExtension(name);
+            
             for (int i = 0; i < image1.Height; i++)
             {
                 for (int j = 0; j < image1.Width; j++)
@@ -122,7 +111,6 @@ class ImageProcessor
             }
             image1.Save($"{file}_bw{extension}");
         }
-        
     }
 /*
     /// <summary>
