@@ -15,29 +15,22 @@ class ImageProcessor
     {
         Parallel.ForEach(filenames, name =>
         {
-            InverseHelper(name);
+            using (Bitmap image1 = new Bitmap(name))
+            {
+                string file = Path.GetFileNameWithoutExtension(name);
+                string extension = Path.GetExtension(name);
+                for (int i = 0; i < image1.Height; i++)
+                        {
+                            for (int j = 0; j < image1.Width; j++)
+                            {
+                                Color original = image1.GetPixel(j, i);
+                                image1.SetPixel(j, i, Color.FromArgb(255 - original.R, 255 - original.G, 255 - original.B));
+                            }
+                        }
+                        image1.Save($"{file}_inverse{extension}");
+            }
         }
         );
-    }
-
-    /* Creates and saves an inverse copy of an image. */
-    private static void InverseHelper(string name)
-    {
-        string file = Path.GetFileNameWithoutExtension(name);
-        string extension = Path.GetExtension(name);
-        
-        using (Bitmap image1 = new Bitmap(name))
-        {
-            for (int i = 0; i < image1.Height; i++)
-                    {
-                        for (int j = 0; j < image1.Width; j++)
-                        {
-                            Color original = image1.GetPixel(j, i);
-                            image1.SetPixel(j, i, Color.FromArgb(255 - original.R, 255 - original.G, 255 - original.B));
-                        }
-                    }
-                    image1.Save($"{file}_inverse{extension}");
-        }
     }
 
     /// <summary>
@@ -47,31 +40,26 @@ class ImageProcessor
     {
         Parallel.ForEach(filenames, name =>
         {
-            GrayscaleHelper(name);
+            //GrayscaleHelper(name);
+            using (Bitmap image1 = new Bitmap(name))
+            {
+                string file = Path.GetFileNameWithoutExtension(name);
+                string extension = Path.GetExtension(name);
+
+                for (int i = 0; i < image1.Height; i++)
+                {
+                    for (int j = 0; j < image1.Width; j++)
+                    {
+                        Color pixel = image1.GetPixel(j, i);
+                        int gray = pixel.R + pixel.G + pixel.B;
+                        gray = gray / 3;
+                        image1.SetPixel(j, i, Color.FromArgb(gray, gray, gray));
+                    }
+                }
+                image1.Save($"{file}_grayscale{extension}");
+            }
         }
         );
-    }
-
-    /* Copies and saves an image in grayscale. */
-    private static void GrayscaleHelper(string name)
-    {
-        using (Bitmap image1 = new Bitmap(name))
-        {
-            string file = Path.GetFileNameWithoutExtension(name);
-            string extension = Path.GetExtension(name);
-
-            for (int i = 0; i < image1.Height; i++)
-            {
-                for (int j = 0; j < image1.Width; j++)
-                {
-                    Color pixel = image1.GetPixel(j, i);
-                    int gray = pixel.R + pixel.G + pixel.B;
-                    gray = gray / 3;
-                    image1.SetPixel(j, i, Color.FromArgb(gray, gray, gray));
-                }
-            }
-            image1.Save($"{file}_grayscale{extension}");
-        }
     }
 
     /// <summary>
@@ -81,36 +69,30 @@ class ImageProcessor
     {
         Parallel.ForEach(filenames, name =>
         {
-            BlackWhiteHelper(name, threshold);
+            using (Bitmap image1 = new Bitmap(name))
+            {
+                string file = Path.GetFileNameWithoutExtension(name);
+                string extension = Path.GetExtension(name);
+                
+                for (int i = 0; i < image1.Height; i++)
+                {
+                    for (int j = 0; j < image1.Width; j++)
+                    {
+                        Color pixel = image1.GetPixel(j, i);
+                        
+                        double sum = pixel.R + pixel.G + pixel.B;
+                        int bw = 0;
+                        if (sum >= threshold)
+                        {
+                            bw = 255;
+                        }
+                        image1.SetPixel(j, i, Color.FromArgb(bw, bw, bw));
+                    }
+                }
+                image1.Save($"{file}_bw{extension}");
+            }
         }
         );
-    }
-
-    /* Copies and saves an image in bw. */
-    private static void BlackWhiteHelper(string name, double threshold)
-    {
-        using (Bitmap image1 = new Bitmap(name))
-        {
-            string file = Path.GetFileNameWithoutExtension(name);
-            string extension = Path.GetExtension(name);
-            
-            for (int i = 0; i < image1.Height; i++)
-            {
-                for (int j = 0; j < image1.Width; j++)
-                {
-                    Color pixel = image1.GetPixel(j, i);
-                    
-                    double sum = pixel.R + pixel.G + pixel.B;
-                    int bw = 0;
-                    if (sum >= threshold)
-                    {
-                        bw = 255;
-                    }
-                    image1.SetPixel(j, i, Color.FromArgb(bw, bw, bw));
-                }
-            }
-            image1.Save($"{file}_bw{extension}");
-        }
     }
 /*
     /// <summary>
