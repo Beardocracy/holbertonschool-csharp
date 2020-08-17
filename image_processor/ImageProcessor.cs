@@ -9,7 +9,7 @@ using System.Threading;
 class ImageProcessor
 {
     /// <summary>
-    /// Creates and saves a inverse copy of an image
+    /// Calls inversehelper in threads.
     /// </summary>
     public static void Inverse(string[] filenames)
     {
@@ -23,6 +23,9 @@ class ImageProcessor
         }
     }
 
+    /// <summary>
+    /// Creates and saves an inverse copy of an image.
+    /// </summary>
     public static void InverseHelper(string name, string file, string extension)
     {
         Bitmap image1 = new Bitmap(name);
