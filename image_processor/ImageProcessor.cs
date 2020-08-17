@@ -12,7 +12,7 @@ class ImageProcessor
     /// </summary>
     public static void Inverse(string[] filenames)
     {
-        foreach(String name in filenames)
+        foreach(string name in filenames)
         {
             string file = Path.GetFileNameWithoutExtension(name);
             string extension = Path.GetExtension(name);
@@ -28,7 +28,7 @@ class ImageProcessor
 
                 }
             }
-            image1.Save($"{file}_inverted{extension}");
+            image1.Save($"{file}_inverse{extension}");
         }
     }
 }
