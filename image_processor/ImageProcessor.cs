@@ -1,13 +1,51 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 /// <summary>
 /// Contains the Inverse function
 /// </summary>
 class ImageProcessor
 {
+    /// <summary>
+    /// Calls inversehelper in threads.
+    /// </summary>
+    public static void Inverse(string[] filenames)
+    {
+        Parallel.ForEach(filenames, name =>
+        {
+            Bitmap image1 = new Bitmap(name);
+
+            Rectangle rect = new Rectangle(0, 0, image1.Width, image1.Height);
+            BitmapData imgData = image1.LockBits(rect, ImageLockMode.ReadWrite, image1.PixelFormat);
+
+            IntPtr ptr = imgData.Scan0;
+
+            int bytes = Math.Abs(imgData.Stride) * image1.Height;
+            byte[] rgbValues = new byte[bytes];
+
+            Marshal.Copy(ptr, rgbValues, 0, bytes);
+
+            for (int i = 0; i < rgbValues.Length; i++)
+            {
+                rgbValues[i] = (byte)(255 - rgbValues[i]);
+            }
+
+            Marshal.Copy(rgbValues, 0, ptr, bytes);
+
+            image1.UnlockBits(imgData);
+
+            string file = Path.GetFileNameWithoutExtension(name);
+            string extension = Path.GetExtension(name);
+            image1.Save($"{file}_inverse{extension}");
+        }
+        );
+    }
+    
+    /*
     /// <summary>
     /// Calls inversehelper in threads.
     /// </summary>
@@ -32,7 +70,8 @@ class ImageProcessor
         }
         );
     }
-
+    */
+    
     /// <summary>
     /// Sends filenames to Grayscale helper in threads.
     /// </summary>
