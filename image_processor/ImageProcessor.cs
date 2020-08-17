@@ -75,4 +75,44 @@ class ImageProcessor
         }
         image1.Save($"{file}_grayscale{extension}");
     }
+
+    /// <summary>
+    /// Sends filenames to bw helper in threads.
+    /// </summary>
+    public static void BlackWhite(string[] filenames, double threshold)
+    {
+        foreach(string name in filenames)
+        {
+            Thread t = new Thread (()=>BlackWhiteHelper(name, threshold));
+            t.Start();
+        }
+    }
+
+    /// <summary>
+    /// Copies and saves an image in bw.
+    /// </summary>
+    private static void BlackWhiteHelper(string name, double threshold)
+    {
+        string file = Path.GetFileNameWithoutExtension(name);
+        string extension = Path.GetExtension(name);
+        
+        Bitmap image1 = new Bitmap(name);
+
+        for (int i = 0; i < image1.Height; i++)
+        {
+            for (int j = 0; j < image1.Width; j++)
+            {
+                Color pixel = image1.GetPixel(j, i);
+                
+                double sum = pixel.R + pixel.G + pixel.B;
+                int bw = 0;
+                if (sum >= threshold)
+                {
+                    bw = 255;
+                }
+                image1.SetPixel(j, i, Color.FromArgb(bw, bw, bw));
+            }
+        }
+        image1.Save($"{file}_bw{extension}");
+    }
 }
