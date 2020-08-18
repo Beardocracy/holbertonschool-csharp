@@ -51,6 +51,8 @@ class ImageProcessor
     /// </summary>
     public static void Grayscale(string[] filenames)
     {
+        int gray;
+
         Parallel.ForEach(filenames, name =>
         {
             Bitmap image1 = new Bitmap(name);
@@ -65,9 +67,9 @@ class ImageProcessor
 
             Marshal.Copy(ptr, rgbValues, 0, bytes);
 
-            for (int i = 0; i < rgbValues.Length; i += 3)
+            for (int i = 0; i < rgbValues.Length; i = i + 3)
             {
-                int gray = rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2];
+                gray = rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2];
                 gray = gray / 3;
                 
                 rgbValues[i] = (byte)gray;
@@ -93,31 +95,43 @@ class ImageProcessor
     {
         Parallel.ForEach(filenames, name =>
         {
-            using (Bitmap image1 = new Bitmap(name))
+            int bw;
+            double sum;
+            Bitmap image1 = new Bitmap(name);
+
+            Rectangle rect = new Rectangle(0, 0, image1.Width, image1.Height);
+            BitmapData imgData = image1.LockBits(rect, ImageLockMode.ReadWrite, image1.PixelFormat);
+
+            IntPtr ptr = imgData.Scan0;
+
+            int bytes = Math.Abs(imgData.Stride) * image1.Height;
+            byte[] rgbValues = new byte[bytes];
+
+            Marshal.Copy(ptr, rgbValues, 0, bytes);
+
+            for (int i = 0; i < rgbValues.Length; i += 3)
             {
-                string file = Path.GetFileNameWithoutExtension(name);
-                string extension = Path.GetExtension(name);
+                sum = rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2];
+                bw = 0;
+                if (sum >= threshold)
+                    bw = 255;
+                rgbValues[i] = (byte)bw;
+                rgbValues[i + 1] = (byte)bw;
+                rgbValues[i + 2] = (byte)bw;
                 
-                for (int i = 0; i < image1.Height; i++)
-                {
-                    for (int j = 0; j < image1.Width; j++)
-                    {
-                        Color pixel = image1.GetPixel(j, i);
-                        
-                        double sum = pixel.R + pixel.G + pixel.B;
-                        int bw = 0;
-                        if (sum >= threshold)
-                        {
-                            bw = 255;
-                        }
-                        image1.SetPixel(j, i, Color.FromArgb(bw, bw, bw));
-                    }
-                }
-                image1.Save($"{file}_bw{extension}");
             }
+
+            Marshal.Copy(rgbValues, 0, ptr, bytes);
+
+            image1.UnlockBits(imgData);
+
+            string file = Path.GetFileNameWithoutExtension(name);
+            string extension = Path.GetExtension(name);
+            image1.Save($"{file}_bw{extension}");
         }
         );
     }
+    
     /// <summary>
     /// Sends filenames and height to helper function in threads.
     /// </summary>
