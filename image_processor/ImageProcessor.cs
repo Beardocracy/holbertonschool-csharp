@@ -67,7 +67,7 @@ class ImageProcessor
 
             Marshal.Copy(ptr, rgbValues, 0, bytes);
 
-            for (int i = 0; i < rgbValues.Length; i += 3)
+            for (int i = 0; i < rgbValues.Length - 2; i += 3)
             {
                 gray = rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2];
                 gray = gray / 3;
