@@ -77,6 +77,8 @@ class ImageProcessor
 
             Marshal.Copy(rgbValues, 0, ptr, bytes);
 
+            image1.UnlockBits(imgData);
+
             string file = Path.GetFileNameWithoutExtension(name);
             string extension = Path.GetExtension(name);
             image1.Save($"{file}_grayscale{extension}");
