@@ -51,10 +51,11 @@ class ImageProcessor
     /// </summary>
     public static void Grayscale(string[] filenames)
     {
-        int gray;
 
         Parallel.ForEach(filenames, name =>
         {
+            int gray;
+            
             Bitmap image1 = new Bitmap(name);
 
             Rectangle rect = new Rectangle(0, 0, image1.Width, image1.Height);
@@ -95,7 +96,6 @@ class ImageProcessor
     {
         Parallel.ForEach(filenames, name =>
         {
-            int bw;
             double sum;
             Bitmap image1 = new Bitmap(name);
 
@@ -112,13 +112,18 @@ class ImageProcessor
             for (int i = 0; i < rgbValues.Length; i += 3)
             {
                 sum = rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2];
-                bw = 0;
                 if (sum >= threshold)
-                    bw = 255;
-                rgbValues[i] = (byte)bw;
-                rgbValues[i + 1] = (byte)bw;
-                rgbValues[i + 2] = (byte)bw;
-                
+                {
+                    rgbValues[i] = 255;
+                    rgbValues[i + 1] = 255;
+                    rgbValues[i + 2] = 255;
+                }
+                else
+                {
+                    rgbValues[i] = 0;
+                    rgbValues[i + 1] = 0;
+                    rgbValues[i + 2] = 0;
+                }
             }
 
             Marshal.Copy(rgbValues, 0, ptr, bytes);
@@ -131,7 +136,7 @@ class ImageProcessor
         }
         );
     }
-    
+
     /// <summary>
     /// Sends filenames and height to helper function in threads.
     /// </summary>
