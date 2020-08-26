@@ -13,7 +13,7 @@ class MatrixMath
         double [,] result = new double[2, 2];
 
         
-        if (matrix.GetLength(1) != 2 || matrix.GetLength(0) != 2)
+        if (matrix == null || matrix.GetLength(1) != 2 || matrix.GetLength(0) != 2)
             return new double[1, 1] {{-1}};
         
         
