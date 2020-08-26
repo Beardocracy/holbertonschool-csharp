@@ -16,11 +16,13 @@ class MatrixMath
         if (matrix.GetLength(1) != 2 || matrix.GetLength(0) != 2)
             return new double[1, 1] {{-1}};
         
-        for (int row = 0; row < 2; row++)
-        {
-            result[row, 0] = Math.Round(((matrix[row, 0] * Math.Cos(angle)) - (matrix[row, 1] * Math.Sin(angle))), 2);
-            result[row, 1] = Math.Round(((matrix[row, 0] * Math.Sin(angle)) + (matrix[row, 1] * Math.Cos(angle))), 2);
-        }
+        
+        
+        result[0, 0] = Math.Round(((matrix[0, 0] * Math.Cos(angle)) - (matrix[0, 1] * Math.Sin(angle))), 2);
+        result[0, 1] = Math.Round(((matrix[0, 0] * Math.Sin(angle)) + (matrix[0, 1] * Math.Cos(angle))), 2);
+        result[1, 0] = Math.Round(((matrix[1, 0] * Math.Cos(angle)) - (matrix[1, 1] * Math.Sin(angle))), 2);
+        result[1, 1] = Math.Round(((matrix[1, 0] * Math.Sin(angle)) + (matrix[1, 1] * Math.Cos(angle))), 2);
+    
        
         return result;
     }
