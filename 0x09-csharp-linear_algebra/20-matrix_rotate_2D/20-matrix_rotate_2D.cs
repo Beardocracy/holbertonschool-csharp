@@ -18,8 +18,8 @@ class MatrixMath
         
         for (int row = 0; row < 2; row++)
         {
-            result[row, 0] = Math.Round((matrix[row, 0] * Math.Cos(angle) - matrix[row, 1] * Math.Sin(angle)), 2);
-            result[row, 1] = Math.Round((matrix[row, 0] * Math.Sin(angle) + matrix[row, 1] * Math.Cos(angle)), 2);
+            result[row, 0] = Math.Round(((matrix[row, 0] * Math.Cos(angle)) - (matrix[row, 1] * Math.Sin(angle))), 2);
+            result[row, 1] = Math.Round(((matrix[row, 0] * Math.Sin(angle)) + (matrix[row, 1] * Math.Cos(angle))), 2);
         }
        
         return result;
