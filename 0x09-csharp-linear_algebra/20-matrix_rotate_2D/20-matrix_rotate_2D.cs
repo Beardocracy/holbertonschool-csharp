@@ -22,8 +22,6 @@ class MatrixMath
             result[row, 1] = Math.Round((matrix[row, 0] * Math.Sin(angle) + matrix[row, 1] * Math.Cos(angle)), 2);
         }
        
-       // Console.WriteLine(matrix1.GetLength(0) + "x" + matrix1.GetLength(1) + " X " + matrix2.GetLength(0) + "x" + matrix2.GetLength(1));
-        
         return result;
     }
 }
