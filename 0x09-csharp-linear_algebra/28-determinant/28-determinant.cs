@@ -17,7 +17,7 @@ class MatrixMath
         // Calculates determinant for 2x2 matrix.
         if (matrix.GetLength(0) == 2)
         {
-            return matrix[0, 0] * matrix[1, 1] - matrix[0, 1] * matrix[1, 0];
+            return Math.Round((matrix[0, 0] * matrix[1, 1] - matrix[0, 1] * matrix[1, 0]), 2);
         }
         // Calculates determinant for 3x3 matrix.
         if (matrix.GetLength(0) == 3)
